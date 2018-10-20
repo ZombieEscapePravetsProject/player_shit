@@ -3,56 +3,53 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
-	public Rigidbody playerRigidbody;
-	public float speed = 6f;
+	public float Speed = 6f;
+	public float MouseSensitivity = 5f;
+	public float JumpHeight = 2f;
 
-	private Vector3 movement;
-	private float yaw = 0.0f;
-	private bool isGrounded;
+	private Vector3 _inputs = Vector3.zero;
+	private float _yaw = 0.0f;
+	private bool _isGrounded;
+	private Rigidbody _body;
 
-	void Update() {
-		yaw += 5 * Input.GetAxis("Mouse X");
-
-		transform.eulerAngles = new Vector3(0, yaw, 0.0f);
+	void Start() {
+		_body = GetComponent<Rigidbody>();
 	}
 
-	void FixedUpdate ()
-	{
-		float h = Input.GetAxisRaw ("Horizontal");
-		float v = Input.GetAxisRaw ("Vertical");
+	void Update () {
 
-		Move (h, v);
-
-		if (Input.GetAxisRaw ("Jump") == 1 && isGrounded) {
-			Jump();
+		// Movement
+		_inputs = Vector3.zero;
+		_inputs.x = Input.GetAxis("Horizontal");
+		_inputs.z = Input.GetAxis("Vertical");
+		_inputs = transform.worldToLocalMatrix.inverse * _inputs;
+		if (_inputs != Vector3.zero) {
+			transform.forward = _inputs;
 		}
 
+		// Mouse control
+		_yaw += MouseSensitivity * Input.GetAxis("Mouse X");
+		transform.eulerAngles = new Vector3(0, _yaw, 0);
+
+		// Jump
+		if (Input.GetButtonDown("Jump") && _isGrounded) {
+			_body.AddForce(Vector3.up * Mathf.Sqrt(JumpHeight * -2f * Physics.gravity.y), ForceMode.VelocityChange);
+		}
 	}
 
-	void Move (float h, float v)
-	{
-		movement.Set (h, 0f, v);
-		movement = movement.normalized * speed * Time.deltaTime;
-		movement = transform.worldToLocalMatrix.inverse * movement;
-		playerRigidbody.MovePosition (transform.position + movement);
-	}
-
-	void Jump () {
-		playerRigidbody.AddForce(new Vector3(0, 300, 0));
+	void FixedUpdate () {
+		_body.MovePosition(_body.position + _inputs * Speed * Time.fixedDeltaTime);
 	}
 
 	void OnCollisionEnter(Collision theCollision ) {
-		if(theCollision.gameObject.name == "Plane")
-		{
-			isGrounded = true;
+		if(theCollision.gameObject.name == "Plane") {
+			_isGrounded = true;
 		}
 	}
 
-	//consider when character is jumping .. it will exit collision.
 	void OnCollisionExit(Collision theCollision) {
-		if(theCollision.gameObject.name == "Plane")
-		{
-			isGrounded = false;
+		if(theCollision.gameObject.name == "Plane") {
+			_isGrounded = false;
 		}
 	}
 }
