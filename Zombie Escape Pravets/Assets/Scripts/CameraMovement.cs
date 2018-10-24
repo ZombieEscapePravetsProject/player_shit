@@ -22,7 +22,6 @@ public class CameraMovement : MonoBehaviour {
 		if (_pitch > 45) {
 			_pitch = 45;
 		}
-
 		Vector3 temp = transform.eulerAngles;
 		temp.x = -_pitch;
 		transform.eulerAngles = temp;

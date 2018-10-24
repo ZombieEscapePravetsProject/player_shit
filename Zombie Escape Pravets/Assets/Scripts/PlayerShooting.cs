@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Maybe move the script to the emitter instead of the player
 public class PlayerShooting : MonoBehaviour {
 	    //Drag in the Bullet Emitter from the Component Inspector.
     public GameObject Bullet_Emitter;
@@ -36,7 +37,7 @@ public class PlayerShooting : MonoBehaviour {
             Temporary_RigidBody = Temporary_Bullet_Handler.GetComponent<Rigidbody>();
  
             //Tell the bullet to be "pushed" forward by an amount set by Bullet_Forward_Force.
-            Temporary_RigidBody.AddForce(transform.forward * Bullet_Forward_Force);
+            Temporary_RigidBody.AddForce(Bullet_Emitter.transform.forward * Bullet_Forward_Force);
  
             //Basic Clean Up, set the Bullets to self destruct after 10 Seconds, I am being VERY generous here, normally 3 seconds is plenty.
             Destroy(Temporary_Bullet_Handler, 10.0f);
