@@ -12,11 +12,7 @@ public class PlayerShooting : MonoBehaviour {
     //Enter the Speed of the Bullet from the Component Inspector.
     public float Bullet_Forward_Force;
  
-        // Use this for initialization
-        void Start ()
-    {
-       
-        }
+ 
        
         // Update is called once per frame
         void Update ()
@@ -39,7 +35,7 @@ public class PlayerShooting : MonoBehaviour {
             Temporary_RigidBody.AddForce(transform.forward * Bullet_Forward_Force);
  
             //Basic Clean Up, set the Bullets to self destruct after 10 Seconds, I am being VERY generous here, normally 3 seconds is plenty.
-            Destroy(Temporary_Bullet_Handler, 10.0f);
+            Destroy(Temporary_Bullet_Handler, 5.0f);
         }
     }
 }
